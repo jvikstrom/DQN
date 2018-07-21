@@ -1,4 +1,5 @@
 import gym
+import sys
 import replay_buffer
 import numpy as np
 import tensorflow as tf
@@ -26,7 +27,7 @@ def train(env, actor, rpbuffer):
 
             s1, r1, terminal, _ = env.step(action)
 
-            rpbuffer.add((s1, action, r2, terminal, s2))
+            rpbuffer.add((s0, action, r1, terminal, s1))
             s0 = s1
 
 
@@ -49,11 +50,12 @@ def play(env, actor, games=20):
 
 if __name__ == "__main__":
 
-    env   = gym.make(ENV)
-    actor = None
+    env      = gym.make(ENV)
+    actor    = None
+    rpbuffer = replay_buffer.ReplayBuffer(FRAME_SZ)
     
     if "-t" in sys.argv:
-        train(env, actor)
+        train(env, actor, rpbuffer)
 
     if "-p" in sys.argv:
         play(env, actor)
